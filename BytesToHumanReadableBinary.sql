@@ -1,0 +1,38 @@
+CREATE DEFINER=`User`@`%` FUNCTION `BytesToHumanReadableBinary`(
+	`iBytes` DECIMAL(65,0) UNSIGNED
+)
+RETURNS varchar(42) CHARSET utf8mb4
+LANGUAGE SQL
+DETERMINISTIC
+NO SQL
+SQL SECURITY INVOKER
+COMMENT ''
+BEGIN
+	DECLARE vExponent TINYINT UNSIGNED DEFAULT 0;
+	DECLARE vSize DECIMAL(37,2) UNSIGNED;
+	DECLARE vSuffix CHAR(3);
+	
+	IF iBytes < 1024 THEN 
+		RETURN CONCAT(iBytes, ' B');
+	END IF;
+
+	SET vExponent = FLOOR(LOG(iBytes) / LOG(1024));
+	IF vExponent < 10 THEN
+		SET vSize = iBytes / POW(1024, vExponent),
+		vSuffix = CASE vExponent 
+			WHEN 1 THEN 'KiB'
+			WHEN 2 THEN 'MiB'
+			WHEN 3 THEN 'GiB'
+			WHEN 4 THEN 'TiB'
+			WHEN 5 THEN 'PiB'
+			WHEN 6 THEN 'EiB'
+			WHEN 7 THEN 'ZiB'
+			WHEN 8 THEN 'YiB'
+			WHEN 9 THEN 'RiB'
+		END;
+	ELSE
+		SET vSize = ROUND(iBytes / 1267650600228229401496703205376, 2), vSuffix = 'QiB';
+	END IF;
+
+	RETURN CONCAT(TRIM(TRAILING '.' FROM TRIM(TRAILING '0' FROM vSize)), ' ', vSuffix);
+END
