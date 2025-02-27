@@ -8,5 +8,5 @@ NO SQL
 SQL SECURITY INVOKER
 COMMENT ''
 BEGIN
-	RETURN (SELECT Input REGEXP '^[-+]?(\\d+(\\.\\d*)?|\\.\\d+)$');
+	RETURN Input REGEXP '^[-+]?(\\d+(\\.\\d*)?|\\.\\d+)$';
 END
