@@ -9,7 +9,7 @@ SQL SECURITY INVOKER
 COMMENT ''
 BEGIN
    DECLARE vSize DECIMAL(37,2) UNSIGNED;
-   DECLARE vSuffix VARCHAR(4);
+   DECLARE vSuffix CHAR(4);
 	
 	CASE 
 		WHEN iBytes < 1024                            THEN RETURN CONCAT(iBytes, ' B');
